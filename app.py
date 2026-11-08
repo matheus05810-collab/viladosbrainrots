@@ -7,7 +7,7 @@ from google.genai import types
 #  CONFIGURAÇÕES GERAIS (mude à vontade)
 # =====================================================================
 NOME_DA_IA = "IA Vila dos Brainrots"
-MODELOS = ["gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-2.5-flash-lite"]
+MODELOS = ["gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-3.5-flash-lite"]
 TENTATIVAS_POR_MODELO = 2
 TEMPO_LIMITE_MS = 20000      # 20 segundos por tentativa
 MAX_MENSAGENS_HISTORICO = 20  # só as últimas mensagens vão para a IA (economiza limite)
