@@ -8,7 +8,8 @@ NOME_DA_IA = "IA Vila dos Brainrots"
 # Lista de modelos: ele tenta o primeiro e, se falhar, passa para o próximo.
 # Se algum nome deixar de existir, o app simplesmente pula para o seguinte.
 MODELOS = ["gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-2.5-flash-lite"]
-TENTATIVAS_POR_MODELO = 3
+TENTATIVAS_POR_MODELO = 2
+TEMPO_LIMITE_MS = 20000  # 20 segundos por tentativa
 PERSONALIDADE = (
     "Você é a IA da Vila dos Brainrots, uma vila maluca e engraçada cheia de "
     "personagens brainrot. Fale em português do Brasil, com humor, gírias da "
@@ -60,11 +61,15 @@ st.title(f"🧡 {NOME_DA_IA}")
 st.markdown(f'<div class="faixa">{SAUDACAO}</div>', unsafe_allow_html=True)
 
 # A chave fica guardada nos "secrets" do Streamlit, nunca no código
-client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+client = genai.Client(
+    api_key=st.secrets["GEMINI_API_KEY"],
+    http_options=types.HttpOptions(timeout=TEMPO_LIMITE_MS),
+)
 
 
 def gerar_resposta(historico):
-    """Tenta cada modelo, com novas tentativas quando o servidor está sobrecarregado."""
+    """Tenta cada modelo, com novas tentativas rápidas. Retorna (texto, erro_tecnico)."""
+    ultimo_erro = ""
     for modelo in MODELOS:
         for tentativa in range(TENTATIVAS_POR_MODELO):
             try:
@@ -74,17 +79,18 @@ def gerar_resposta(historico):
                     config=types.GenerateContentConfig(system_instruction=PERSONALIDADE),
                 )
                 if resposta.text:
-                    return resposta.text
-                break  # resposta vazia: tenta o próximo modelo
+                    return resposta.text, ""
+                ultimo_erro = f"{modelo}: resposta vazia"
+                break
             except Exception as e:
                 erro = str(e)
+                ultimo_erro = f"{modelo}: {erro[:200]}"
                 if "401" in erro or "403" in erro or "API key" in erro:
-                    return MSG_CHAVE
+                    return MSG_CHAVE, ultimo_erro
                 if "404" in erro or "NOT_FOUND" in erro:
                     break  # modelo não existe mais: vai para o próximo
-                # 503 / 429 / outros: espera um pouco e tenta de novo
-                time.sleep(2 * (tentativa + 1))
-    return MSG_SOBRECARGA
+                time.sleep(1.5)
+    return MSG_SOBRECARGA, ultimo_erro
 
 
 if "mensagens" not in st.session_state:
@@ -112,7 +118,9 @@ if pergunta:
 
     with st.chat_message("assistant", avatar="🧡"):
         with st.spinner("A Vila está pensando... 🧠"):
-            texto = gerar_resposta(historico)
+            texto, erro_tecnico = gerar_resposta(historico)
         st.markdown(texto)
+        if erro_tecnico:
+            st.caption(f"Detalhe técnico: {erro_tecnico}")
 
     st.session_state.mensagens.append({"role": "assistant", "content": texto})
