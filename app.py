@@ -4,7 +4,7 @@ from google.genai import types
 
 # ---- Configurações (mude à vontade) ----
 NOME_DA_IA = "IA Vila dos Brainrots"
-MODELO = "gemini-2.5-flash"  # confira o nome atual no Google AI Studio
+MODELO = "gemini-3.8-flash"  # confira o nome atual no Google AI Studio
 PERSONALIDADE = (
     "Você é a IA da Vila dos Brainrots, uma vila maluca e engraçada cheia de "
     "personagens brainrot. Fale em português do Brasil, com humor, gírias da "
