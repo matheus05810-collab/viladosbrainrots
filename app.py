@@ -19,7 +19,7 @@ from google.genai import types
 #  CONFIGURAÇÕES GERAIS
 # =====================================================================
 NOME_DA_IA = "NEXUS AI • Vila dos Brainrots"
-MODELOS_GEMINI = ["gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-2.5-flash-lite"]
+MODELOS_GEMINI = ["gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-3.5-flash-lite"]
 TENTATIVAS_POR_MODELO = 2
 TEMPO_LIMITE_MS = 30000
 MAX_MENSAGENS_HISTORICO = 20
