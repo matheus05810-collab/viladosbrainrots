@@ -51,7 +51,7 @@ st.title(f"🧡 {NOME_DA_IA}")
 st.markdown(f'<div class="faixa">{SAUDACAO}</div>', unsafe_allow_html=True)
 
 # A chave fica guardada nos "secrets" do Streamlit, nunca no código
-client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+client = genai.Client(api_key=st.secrets["AQ.Ab8RN6IMY9rrsoAX5Xv0Y3_Ba2cKBwjLxEwmUSOWMCpUEDYsZQ"])
 
 if "mensagens" not in st.session_state:
     st.session_state.mensagens = []
