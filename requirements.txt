@@ -1,2 +1,6 @@
-streamlit
+streamlit>=1.40
 google-genai
+pandas
+openpyxl
+python-pptx
+requests
